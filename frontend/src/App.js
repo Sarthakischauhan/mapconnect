@@ -6,11 +6,13 @@ import { FlipRounded, Room, Star} from '@material-ui/icons';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import axios from "axios";
 import {format} from "timeago.js";
-
+import Register from "../src/components/Register";
+import Login from "../src/components/Login";
 
 const App = () => {
+  const myStorage = window.localStorage;
   const [pins,setPins] = useState([]);
-  const [currentUser,setCurrentUser] = useState("sarthak999")
+  const [currentUser,setCurrentUser] = useState("")
   const [viewport,setViewport] = useState({
     longitude: 78.8718, 
     latitude: 21.7679,
@@ -22,6 +24,8 @@ const App = () => {
   const [rating,setRating] = useState(null);
   const [showPopup,setShowPopup] = useState(true);
   const [currentPlaceId,setCurrentPlaceId] = useState(null);
+  const [showLogin,setShowLogin] = useState(null);
+  const [showRegister,setShowRegister] = useState(null);
 
   const handleMarkerCLick = (id,lat,long) => {
       setCurrentPlaceId(id);
@@ -34,6 +38,11 @@ const App = () => {
         lat:latitude,
         long:longitude
       });
+  }
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    myStorage.removeItem("user");
   }
 
   const handleSubmit = async (e) => {
@@ -145,7 +154,31 @@ const App = () => {
           </>
         )
       })}
-
+      {currentUser ? (
+          <button className="button logout" onClick={handleLogout}>
+            Log out
+          </button>
+      ) : (
+          <div className="buttons">
+            <button className="button login" onClick={() => setShowLogin(true)}>
+              Log in
+            </button>
+            <button
+              className="button register"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
+          </div>
+        )}
+        {showRegister && <Register setRegister={setShowRegister} />}
+        {showLogin && (
+          <Login
+            setShowLogin={setShowLogin}
+            setCurrentUsername={setCurrentUser}
+            myStorage={myStorage}
+          />
+        )}
 
     </Map>
   );
