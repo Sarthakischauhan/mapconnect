@@ -9,6 +9,10 @@ dotenv.config();
 
 
 app.use(express.json())
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
+  });
 
 mongoose.connect(`mongodb+srv://${process.env.USERNAME}:${process.env.PASSWORD}@cluster0.kgfxb.mongodb.net/${process.env.DATABASE}?retryWrites=true&w=majority`,{ useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
